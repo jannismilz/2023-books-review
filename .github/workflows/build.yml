@@ -92,17 +92,13 @@ jobs:
                   name: github-pages # Needed for GitHub Pages
                   path: pdfs/review.pdf
 
-            - name: Zip PDF
-              run: |
-                  gzip review.zip pdfs/review.pdf
-
             - name: Fix permissions
               run: |
-                  chmod -c -R +rX "review.zip" | while read line; do
+                  chmod -c -R +rX "pdfs/review.pdf.gz" | while read line; do
                     echo "::warning title=Invalid file permissions automatically fixed::$line"
                   done
 
             - name: Upload Pages artifact
               uses: actions/upload-pages-artifact@v2
               with:
-                  path: review.zip
+                  path: pdfs/review.pdf.gz
