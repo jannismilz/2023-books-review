@@ -84,20 +84,23 @@ jobs:
               run: |
                   sudo apt-get update
                   sudo apt-get install -y pdftk
-                  sudo pdftk pdfs/frontpage.pdf pdfs/finalChapters.pdf cat output pdfs/review.pdf
-                  chmod 777 pdfs/review.pdf
+                  sudo pdftk pdfs/frontpage.pdf pdfs/finalChapters.pdf cat output _site/review.pdf
 
             - name: Upload PDF To Artifacts
               uses: actions/upload-artifact@v3
               with:
                   name: github-pages # Needed for GitHub Pages
-                  path: pdfs/review.pdf
+                  path: _site/review.pdf
+
+            - name: Fix permissions
+              run: |
+                  chmod -c -R +rX "_site/" | while read line; do
+                    echo "::warning title=Invalid file permissions automatically fixed::$line"
+                  done
 
             - name: Zip PDF
               run: |
-                  gzip pdfs/review.pdf
+                  gzip _site/review.pdf
 
             - name: Upload Pages artifact
               uses: actions/upload-pages-artifact@v2
-              with:
-                  path: pdfs/review.pdf.gz
