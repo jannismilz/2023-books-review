@@ -111,7 +111,7 @@ jobs:
                   gzip _site/review.pdf
 
             - name: Upload Pages artifact
-              uses: actions/upload-pages-artifact@v2
+              uses: actions/upload-pages-artifact@v1
 
             - name: Deploy to GitHub Pages
               uses: actions/deploy-pages@v2
