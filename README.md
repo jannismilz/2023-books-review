@@ -1,3 +1,3 @@
-# Markdown Concept Template
+# 2023 Books Review
 
-![Pipeline status](https://github.com/jannismilz/markdown-concept-template/actions/workflows/build.yml/badge.svg)
+![Pipeline status](https://github.com/jannismilz/2023-books-review/actions/workflows/build.yml/badge.svg)
