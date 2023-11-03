@@ -13,9 +13,6 @@ jobs:
             contents: read
             pages: write
             id-token: write
-        environment:
-            name: github-pages
-            url: ${{ steps.deployment.outputs.page_url }}
         name: Build PDF Document
         runs-on: ubuntu-latest
         steps:
@@ -92,7 +89,7 @@ jobs:
                   sudo apt-get update
                   sudo apt-get install -y pdftk
                   mkdir -p _site
-                  sudo pdftk pdfs/frontpage.pdf pdfs/finalChapters.pdf cat output _site/review.pdf
+                  sudo pdftk pdfs/frontpage.pdf pdfs/finalChapters.pdf cat output pdfs/review.pdf
                   touch _site/index.html
                   echo "<h1>Hello World</h1>" >> _site/index.html
 
@@ -100,7 +97,7 @@ jobs:
               uses: actions/upload-artifact@v3
               with:
                   name: github-pages # Needed for GitHub Pages
-                  path: _site/review.pdf
+                  path: pdfs/review.pdf
 
             - name: Fix permissions
               run: |
