@@ -93,6 +93,8 @@ jobs:
                   sudo apt-get install -y pdftk
                   mkdir -p _site
                   sudo pdftk pdfs/frontpage.pdf pdfs/finalChapters.pdf cat output _site/review.pdf
+                  touch _site/index.html
+                  echo "<h1>Hello World</h1>" >> _site/index.html
 
             - name: Upload PDF To Artifacts
               uses: actions/upload-artifact@v3
@@ -106,9 +108,9 @@ jobs:
                     echo "::warning title=Invalid file permissions automatically fixed::$line"
                   done
 
-            - name: Zip PDF
-              run: |
-                  gzip _site/review.pdf
+            # - name: Zip PDF
+            #   run: |
+            #       gzip _site/review.pdf
 
             - name: Upload Pages artifact
               uses: actions/upload-pages-artifact@v1
