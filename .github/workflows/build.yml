@@ -10,7 +10,7 @@ on:
 jobs:
     converttopdf:
         permissions:
-            contents: write
+            contents: read
             pages: write
             id-token: write
         name: Build PDF Document
@@ -38,76 +38,77 @@ jobs:
                   theme: ./assets/style.css
                   extend_default_theme: true
 
-            - name: Merge All Chapters Together For No ToC
-              # Automatically split multiple pages by a pagebreak element
-              run: |
-                  mkdir -p temp &&
-                  find ./chapters -type f -name '*.md' ! -name '00_*.md' -print0 |
-                  sort -z |
-                  xargs -0 awk 'FNR==1 && NR!=1 {print "\n<div class=\"pagebreak\"></div>\n"} {print}' > temp/noToC.md
+            # - name: Merge All Chapters Together For No ToC
+            #   # Automatically split multiple pages by a pagebreak element
+            #   run: |
+            #       mkdir -p temp &&
+            #       find ./chapters -type f -name '*.md' ! -name '00_*.md' -print0 |
+            #       sort -z |
+            #       xargs -0 awk 'FNR==1 && NR!=1 {print "\n<div class=\"pagebreak\"></div>\n"} {print}' > temp/noToC.md
 
-            - name: Convert Chapters Markdown To PDF Without ToC
-              uses: baileyjm02/markdown-to-pdf@v1
-              with:
-                  input_dir: temp/noToC.md
-                  output_dir: pdfs/
-                  images_dir: assets/images
-                  # for example <img src="./images/file-name.png">
-                  image_import: ../assets/images
-                  # Default is true, can set to false to only get PDF files
-                  build_html: false
-                  theme: ./assets/style.css
-                  extend_default_theme: true
+            # - name: Convert Chapters Markdown To PDF Without ToC
+            #   uses: baileyjm02/markdown-to-pdf@v1
+            #   with:
+            #       input_dir: temp/noToC.md
+            #       output_dir: pdfs/
+            #       images_dir: assets/images
+            #       # for example <img src="./images/file-name.png">
+            #       image_import: ../assets/images
+            #       # Default is true, can set to false to only get PDF files
+            #       build_html: false
+            #       theme: ./assets/style.css
+            #       extend_default_theme: true
 
-            - name: Merge All Chapters Together For ToC
-              # Automatically split multiple pages by a pagebreak element
-              run: |
-                  find ./chapters -type f -name '*.md' ! -name '00_*.md' -print0 |
-                  sort -z |
-                  xargs -0 awk 'FNR==1 {print "\n<div class=\"pagebreak\"></div>\n"} {print}' > chapters.md
+            # - name: Merge All Chapters Together For ToC
+            #   # Automatically split multiple pages by a pagebreak element
+            #   run: |
+            #       find ./chapters -type f -name '*.md' ! -name '00_*.md' -print0 |
+            #       sort -z |
+            #       xargs -0 awk 'FNR==1 {print "\n<div class=\"pagebreak\"></div>\n"} {print}' > chapters.md
 
-            - name: Convert Chapters Markdown To PDF With ToC
-              uses: baileyjm02/markdown-to-pdf@v1
-              with:
-                  input_dir: chapters.md
-                  output_dir: pdfs/
-                  images_dir: assets/images
-                  # for example <img src="./images/file-name.png">
-                  image_import: ../assets/images
-                  # Default is true, can set to false to only get PDF files
-                  build_html: false
-                  theme: ./assets/style.css
-                  template: ./template/template.html
-                  extend_default_theme: true
-                  table_of_contents: true
+            # - name: Convert Chapters Markdown To PDF With ToC
+            #   uses: baileyjm02/markdown-to-pdf@v1
+            #   with:
+            #       input_dir: chapters.md
+            #       output_dir: pdfs/
+            #       images_dir: assets/images
+            #       # for example <img src="./images/file-name.png">
+            #       image_import: ../assets/images
+            #       # Default is true, can set to false to only get PDF files
+            #       build_html: false
+            #       theme: ./assets/style.css
+            #       template: ./template/template.html
+            #       extend_default_theme: true
+            #       table_of_contents: true
 
-            - name: Add Header and Footers
-              run: sudo bash ./.github/workflows/headerFooter.sh -a 'Jannis Milz' -t 'Markdown Concept Template' -v ${{ github.event.release.tag_name || 'dev' }}
+            # - name: Add Header and Footers
+            #   run: sudo bash ./.github/workflows/headerFooter.sh -a 'Jannis Milz' -t 'Markdown Concept Template' -v ${{ github.event.release.tag_name || 'dev' }}
 
-            - name: Merge PDFs Together
-              run: |
-                  sudo apt-get update
-                  sudo apt-get install -y pdftk
-                  mkdir site
-                  sudo pdftk pdfs/frontpage.pdf pdfs/finalChapters.pdf cat output site/output.pdf
+            # - name: Merge PDFs Together
+            #   run: |
+            #       sudo apt-get update
+            #       sudo apt-get install -y pdftk
+            #       mkdir -p _site
+            #       sudo pdftk pdfs/frontpage.pdf pdfs/finalChapters.pdf cat output pdfs/review.pdf
 
-            - name: Upload PDF To Artifacts
-              uses: actions/upload-artifact@v3
-              with:
-                  name: github-pages # Needed for GitHub Pages
-                  path: site/output.pdf
+            # - name: Upload PDF To Artifacts
+            #   uses: actions/upload-artifact@v3
+            #   with:
+            #       name: github-pages # Needed for GitHub Pages
+            #       path: pdfs/review.pdf
 
             - name: Fix permissions
               run: |
-                  sudo chmod -c -R +rwX "site/" | while read line; do
+                  chmod -c -R +rX "pdfs/" | while read line; do
                     echo "::warning title=Invalid file permissions automatically fixed::$line"
                   done
 
             - name: Create testing HTML file
               run: |
-                  sudo touch site/index.html
-                  chmod u+w "site/index.html"
-                  sudo echo "<h1>Hello World</h1>" >> site/index.html
+                  mkdir site
+                  cp pdfs/* site/
+                  touch site/index.html
+                  echo "<h1>Hello World</h1>" >> site/index.html
 
             - name: Upload Pages artifact
               uses: actions/upload-pages-artifact@v2
