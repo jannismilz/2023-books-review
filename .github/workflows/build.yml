@@ -99,7 +99,7 @@ jobs:
 
             - name: Fix permissions
               run: |
-                  chmod -c -R +rX "site/" | while read line; do
+                  sudo chmod -c -R +rwX "site/" | while read line; do
                     echo "::warning title=Invalid file permissions automatically fixed::$line"
                   done
 
