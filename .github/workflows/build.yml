@@ -99,14 +99,9 @@ jobs:
 
             - name: Fix permissions
               run: |
-                  chmod -c -R a+rwx "pdfs/" | while read line; do
+                  chmod -c -R +rX "pdfs/" | while read line; do
                     echo "::warning title=Invalid file permissions automatically fixed::$line"
                   done
-
-            - name: Create testing HTML file
-              run: |
-                  touch pdfs/index.html
-                  echo "<h1>Hello World</h1>" >> pdfs/index.html
 
             - name: Upload Pages artifact
               uses: actions/upload-pages-artifact@v2
