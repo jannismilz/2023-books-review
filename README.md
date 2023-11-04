@@ -1,3 +1,3 @@
-# 2023 Books Review
+# Markdown PDF GitHub Pages Template
 
-![Pipeline status](https://github.com/jannismilz/2023-books-review/actions/workflows/build.yml/badge.svg)
+![Pipeline status](https://github.com/jannismilz/markdown-pdf-pages-template/actions/workflows/build.yml/badge.svg)

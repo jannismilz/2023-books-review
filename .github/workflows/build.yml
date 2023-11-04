@@ -89,13 +89,13 @@ jobs:
                   sudo apt-get update
                   sudo apt-get install -y pdftk
                   mkdir site
-                  sudo pdftk pdfs/frontpage.pdf pdfs/finalChapters.pdf cat output site/review.pdf
+                  sudo pdftk pdfs/frontpage.pdf pdfs/finalChapters.pdf cat output site/output.pdf
 
             - name: Upload PDF To Artifacts
               uses: actions/upload-artifact@v3
               with:
                   name: github-pages # Needed for GitHub Pages
-                  path: site/review.pdf
+                  path: site/output.pdf
 
             - name: Fix permissions
               run: |
