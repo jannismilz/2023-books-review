@@ -19,24 +19,24 @@ jobs:
             - name: Checkout Repository
               uses: actions/checkout@v3
 
-            # - name: Select Front Page
-            #   run: |
-            #       find ./chapters -type f -name '00_*.md' -print0 |
-            #       xargs -0 cat |
-            #       sed -e '$s|$|\n\n|' > frontpage.md
+            - name: Select Front Page
+              run: |
+                  find ./chapters -type f -name '00_*.md' -print0 |
+                  xargs -0 cat |
+                  sed -e '$s|$|\n\n|' > frontpage.md
 
-            # - name: Convert Frontpage Markdown To PDF
-            #   uses: baileyjm02/markdown-to-pdf@v1
-            #   with:
-            #       input_dir: frontpage.md
-            #       output_dir: pdfs
-            #       images_dir: assets/images
-            #       # for example <img src="./images/file-name.png">
-            #       image_import: ../assets/images
-            #       # Default is true, can set to false to only get PDF files
-            #       build_html: false
-            #       theme: ./assets/style.css
-            #       extend_default_theme: true
+            - name: Convert Frontpage Markdown To PDF
+              uses: baileyjm02/markdown-to-pdf@v1
+              with:
+                  input_dir: frontpage.md
+                  output_dir: pdfs
+                  images_dir: assets/images
+                  # for example <img src="./images/file-name.png">
+                  image_import: ../assets/images
+                  # Default is true, can set to false to only get PDF files
+                  build_html: false
+                  theme: ./assets/style.css
+                  extend_default_theme: true
 
             # - name: Merge All Chapters Together For No ToC
             #   # Automatically split multiple pages by a pagebreak element
@@ -105,12 +105,13 @@ jobs:
 
             - name: Create testing HTML file
               run: |
-                  mkdir _site
-                  touch _site/index.html
-                  echo "<h1>Hello World</h1>" >> _site/index.html
+                  touch pdfs/index.html
+                  echo "<h1>Hello World</h1>" >> pdfs/index.html
 
             - name: Upload Pages artifact
               uses: actions/upload-pages-artifact@v2
+              with:
+                  path: "pdfs"
 
             - name: Deploy to GitHub Pages
               uses: actions/deploy-pages@v2
